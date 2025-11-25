@@ -1,0 +1,201 @@
+id,sentiment,avis
+1,negatif,Trop cher
+2,neutre,Correct sans plus :)
+3,negatif,Je ne recommande pas
+4,neutre,Service acceptable
+5,positif,Je recommande
+6,neutre,Produit standard
+7,positif,Très bon achat
+8,positif,Rapport qualité prix top
+9,positif,Je recommande
+10,neutre,Conforme à la description
+11,neutre,Rien à signaler
+12,negatif,Trop cher
+13,neutre,Produit standard
+14,neutre,Produit standard !!!
+15,positif,Super expérience
+16,neutre,Achat ordinaire :)
+17,positif,Rapport qualité prix top
+18,neutre,Achat ordinaire
+19,negatif,Service lent
+20,positif,Service rapide
+21,neutre,Produit standard
+22,negatif,Non conforme
+23,negatif,Non conforme
+24,negatif,Qualité médiocre
+25,negatif,Je ne recommande pas
+26,neutre,Produit standard
+27,negatif,Très déçu !!!
+28,negatif,Trop cher !!!
+29,positif,Je recommande
+30,positif,Excellent produit
+31,positif,Qualité remarquable !!!
+32,neutre,Achat ordinaire !!!
+33,neutre,Conforme à la description
+34,positif,Très bon achat !!!
+35,negatif,Je ne recommande pas
+36,positif,Très bon achat
+37,negatif,Très déçu
+38,negatif,Très déçu
+39,positif,Super expérience
+40,negatif,Je ne recommande pas !!!
+41,positif,Qualité remarquable
+42,positif,Excellent produit !!!
+43,neutre,Correct sans plus
+44,negatif,Très déçu
+45,neutre,Achat ordinaire !!!
+46,positif,Excellent produit
+47,negatif,Mauvaise expérience
+48,positif,Très satisfait
+49,positif,Super expérience
+50,positif,Super expérience
+51,neutre,Rien à signaler
+52,neutre,Rien à signaler !!!
+53,positif,Super expérience
+54,positif,Qualité remarquable :)
+55,negatif,Service lent
+56,negatif,Très déçu
+57,negatif,Trop cher
+58,positif,Service rapide :)
+59,neutre,Produit standard
+60,positif,Excellent produit
+61,neutre,Produit standard
+62,neutre,Conforme à la description
+63,neutre,Achat ordinaire
+64,negatif,Je ne recommande pas
+65,positif,Excellent produit
+66,negatif,Trop cher
+67,negatif,Je ne recommande pas
+68,neutre,Achat ordinaire :)
+69,neutre,Service acceptable :)
+70,positif,Super expérience
+71,positif,Très satisfait
+72,negatif,Je ne recommande pas !!!
+73,neutre,Service acceptable
+74,negatif,Qualité médiocre
+75,neutre,Produit standard
+76,neutre,Rien à signaler
+77,positif,Très satisfait
+78,negatif,Très déçu
+79,negatif,Trop cher !!!
+80,negatif,Mauvaise expérience
+81,neutre,Correct sans plus
+82,positif,Très bon achat
+83,positif,Service rapide
+84,positif,Très satisfait
+85,neutre,Achat ordinaire
+86,positif,Rapport qualité prix top
+87,positif,Très bon achat
+88,neutre,Rien à signaler
+89,positif,Rapport qualité prix top
+90,positif,Super expérience !!! :)
+91,positif,Qualité remarquable :)
+92,negatif,Mauvaise expérience
+93,negatif,Qualité médiocre
+94,positif,Très satisfait !!! :)
+95,negatif,Non conforme
+96,negatif,Très déçu
+97,positif,Qualité remarquable !!!
+98,neutre,Rien à signaler :)
+99,neutre,Conforme à la description
+100,negatif,Trop cher
+101,negatif,Non conforme
+102,neutre,Achat ordinaire
+103,positif,Super expérience
+104,negatif,Mauvaise expérience !!!
+105,neutre,Correct sans plus
+106,neutre,Produit standard
+107,positif,Service rapide
+108,negatif,Je ne recommande pas
+109,neutre,Rien à signaler
+110,positif,Je recommande
+111,positif,Très bon achat :)
+112,positif,Super expérience :)
+113,positif,Très satisfait
+114,neutre,Correct sans plus
+115,neutre,Conforme à la description
+116,neutre,Rien à signaler !!! :)
+117,negatif,Je ne recommande pas
+118,positif,Très bon achat
+119,neutre,Correct sans plus
+120,neutre,Rien à signaler !!!
+121,negatif,Non conforme
+122,neutre,Rien à signaler
+123,negatif,Qualité médiocre !!!
+124,negatif,Service lent !!!
+125,neutre,Achat ordinaire
+126,negatif,Très déçu
+127,neutre,Correct sans plus :)
+128,negatif,Service lent
+129,positif,Très satisfait
+130,positif,Service rapide
+131,positif,Je recommande
+132,positif,Qualité remarquable
+133,neutre,Service acceptable
+134,positif,Super expérience :)
+135,positif,Très bon achat :)
+136,negatif,Très déçu
+137,positif,Très satisfait
+138,negatif,Qualité médiocre
+139,positif,Super expérience
+140,negatif,Je ne recommande pas
+141,negatif,Très déçu
+142,neutre,Conforme à la description
+143,neutre,Conforme à la description
+144,positif,Service rapide
+145,positif,Qualité remarquable
+146,negatif,Qualité médiocre
+147,neutre,Produit standard
+148,negatif,Trop cher !!!
+149,positif,Rapport qualité prix top !!!
+150,negatif,Qualité médiocre
+151,negatif,Très déçu
+152,negatif,Non conforme
+153,neutre,Achat ordinaire
+154,positif,Très bon achat :)
+155,positif,Très satisfait
+156,negatif,Qualité médiocre
+157,negatif,Qualité médiocre
+158,neutre,Conforme à la description
+159,negatif,Qualité médiocre
+160,positif,Excellent produit
+161,positif,Excellent produit :)
+162,neutre,Conforme à la description
+163,positif,Super expérience
+164,neutre,Conforme à la description
+165,positif,Excellent produit
+166,negatif,Mauvaise expérience
+167,negatif,Service lent
+168,positif,Qualité remarquable
+169,positif,Très satisfait
+170,positif,Très satisfait :)
+171,positif,Service rapide
+172,neutre,Conforme à la description
+173,positif,Service rapide
+174,neutre,Correct sans plus
+175,positif,Service rapide
+176,positif,Service rapide
+177,neutre,Service acceptable :)
+178,neutre,Service acceptable
+179,negatif,Produit cassé !!!
+180,positif,Super expérience
+181,positif,Super expérience
+182,negatif,Qualité médiocre
+183,positif,Service rapide !!!
+184,negatif,Trop cher
+185,positif,Je recommande
+186,neutre,Correct sans plus
+187,neutre,Service acceptable
+188,positif,Rapport qualité prix top
+189,positif,Très satisfait
+190,positif,Qualité remarquable
+191,positif,Service rapide
+192,positif,Super expérience :)
+193,positif,Très bon achat
+194,negatif,Très déçu
+195,positif,Excellent produit
+196,neutre,Rien à signaler
+197,negatif,Non conforme
+198,positif,Rapport qualité prix top
+199,positif,Qualité remarquable !!!
+200,positif,Excellent produit
