@@ -1,0 +1,644 @@
+% ============================================================
+% Rapport: Arbres de Decision, Extensions et Applications
+% Cours: Data Mining
+% ============================================================
+
+\documentclass[12pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{trees,arrows,shapes}
+
+% Configuration de la page
+\geometry{margin=2.5cm}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+
+% Configuration du code Python
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    morecomment=[l][\color{magenta}]{\#},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{gray!10},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black},
+    tabsize=4,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=false,
+    escapeinside={\%*}{*)},
+}
+
+% En-tete et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Arbres de Decision}
+\fancyhead[R]{Data Mining}
+\fancyfoot[C]{\thepage}
+
+% ============================================================
+% DEBUT DU DOCUMENT
+% ============================================================
+
+\begin{document}
+
+% Page de titre
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\LARGE\textbf{Projet de Data Mining}}\\[1cm]
+    
+    {\Huge\textbf{Arbres de Decision,}}\\[0.3cm]
+    {\Huge\textbf{Extensions et Applications}}\\[2cm]
+    
+    {\Large Prediction du Defaut de Credit}\\[2cm]
+    
+    \vfill
+    
+    {\large
+    \textbf{Auteur:} Nassim ZAHRI\\[0.5cm]
+    \textbf{Cours:} Data Mining\\[0.5cm]
+    \textbf{Date:} \today
+    }
+    
+    \vspace{2cm}
+\end{titlepage}
+
+% Table des matieres
+\tableofcontents
+
+
+% ============================================================
+% PARTIE 1: RAPPELS THEORIQUES
+% ============================================================
+
+\section{Rappels Theoriques et Experiences Numeriques}
+
+\subsection{Classification Supervisee}
+
+La classification supervisee est une branche de l'apprentissage automatique qui consiste a apprendre une fonction de prediction a partir d'un ensemble d'exemples etiquetes. Formellement, on dispose d'un ensemble d'entrainement:
+
+\begin{equation}
+D = \{(x_1, y_1), (x_2, y_2), \ldots, (x_n, y_n)\}
+\end{equation}
+
+ou:
+\begin{itemize}
+    \item $x_i \in \mathbb{R}^d$ est le vecteur de caracteristiques (features) de l'exemple $i$
+    \item $y_i \in \{c_1, c_2, \ldots, c_k\}$ est la classe associee a l'exemple $i$
+\end{itemize}
+
+L'objectif est d'apprendre une fonction $f: \mathbb{R}^d \rightarrow \{c_1, \ldots, c_k\}$ capable de predire correctement la classe de nouveaux exemples.
+
+\subsection{Principe General des Arbres de Decision}
+
+Un arbre de decision est un modele de classification structure sous forme d'arbre ou:
+
+\begin{itemize}
+    \item \textbf{Noeuds internes}: Contiennent des tests sur les attributs (conditions)
+    \item \textbf{Branches}: Representent les resultats possibles des tests
+    \item \textbf{Feuilles}: Contiennent les predictions de classe
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+    level 1/.style={sibling distance=50mm},
+    level 2/.style={sibling distance=25mm},
+    decision/.style={rectangle, draw, fill=blue!20, text width=3cm, align=center},
+    leaf/.style={rectangle, draw, fill=green!20, text width=2cm, align=center}
+]
+\node[decision] {Revenu > 30k?}
+    child {
+        node[decision] {Proprietaire?}
+        child { node[leaf] {Non\\(defaut)} edge from parent node[left] {Non} }
+        child { node[leaf] {Oui\\(defaut)} edge from parent node[right] {Oui} }
+        edge from parent node[left] {Non}
+    }
+    child {
+        node[leaf] {Non\\(pas de defaut)}
+        edge from parent node[right] {Oui}
+    };
+\end{tikzpicture}
+\caption{Exemple d'arbre de decision pour la prediction de defaut de credit}
+\end{figure}
+
+Le processus de classification d'un nouvel exemple consiste a parcourir l'arbre depuis la racine jusqu'a atteindre une feuille, en suivant les branches correspondant aux valeurs des attributs de l'exemple.
+
+\subsection{Mesures d'Impurete}
+
+Les mesures d'impurete permettent d'evaluer l'homogeneite d'un noeud. Un noeud est dit \textit{pur} si tous ses exemples appartiennent a la meme classe. Les trois mesures principales sont:
+
+\subsubsection{Indice de Gini}
+
+L'indice de Gini mesure la probabilite qu'un element choisi aleatoirement soit mal classe:
+
+\begin{equation}
+\boxed{Gini(t) = 1 - \sum_{i=1}^{c} p_i^2}
+\end{equation}
+
+ou $p_i$ est la proportion d'exemples de la classe $i$ dans le noeud $t$.
+
+\textbf{Proprietes:}
+\begin{itemize}
+    \item $Gini = 0$ pour un noeud pur
+    \item $Gini = 0.5$ pour une distribution binaire equilibree (50/50)
+    \item $Gini \in [0, 1 - 1/c]$ ou $c$ est le nombre de classes
+\end{itemize}
+
+\subsubsection{Entropie de Shannon}
+
+L'entropie mesure le niveau de desordre ou d'incertitude:
+
+\begin{equation}
+\boxed{Entropie(t) = -\sum_{i=1}^{c} p_i \log_2(p_i)}
+\end{equation}
+
+\textbf{Proprietes:}
+\begin{itemize}
+    \item $Entropie = 0$ pour un noeud pur
+    \item $Entropie = 1$ pour une distribution binaire equilibree
+    \item $Entropie \in [0, \log_2(c)]$
+\end{itemize}
+
+\subsubsection{Erreur de Classification}
+
+L'erreur de classification est la proportion d'exemples mal classes si on predit la classe majoritaire:
+
+\begin{equation}
+\boxed{Erreur(t) = 1 - \max_i(p_i)}
+\end{equation}
+
+\subsection{Exemples Numeriques}
+
+Le tableau \ref{tab:impurete} presente le calcul des mesures d'impurete pour differentes distributions de classes dans un probleme binaire.
+
+\begin{table}[h]
+\centering
+\caption{Comparaison des mesures d'impurete pour differentes distributions}
+\label{tab:impurete}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Cas} & \textbf{Positifs} & \textbf{Negatifs} & \textbf{$p_+$} & \textbf{Gini} & \textbf{Entropie} & \textbf{Erreur} \\
+\midrule
+10/10 (equilibre) & 10 & 10 & 0.50 & 0.5000 & 1.0000 & 0.5000 \\
+18/2 (tres pur) & 18 & 2 & 0.90 & 0.1800 & 0.4690 & 0.1000 \\
+9/1 (desequilibre) & 9 & 1 & 0.90 & 0.1800 & 0.4690 & 0.1000 \\
+5/5 (equilibre) & 5 & 5 & 0.50 & 0.5000 & 1.0000 & 0.5000 \\
+1/9 (desequilibre) & 1 & 9 & 0.10 & 0.1800 & 0.4690 & 0.1000 \\
+20/0 (pur) & 20 & 0 & 1.00 & 0.0000 & 0.0000 & 0.0000 \\
+15/5 & 15 & 5 & 0.75 & 0.3750 & 0.8113 & 0.2500 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Observations:}
+\begin{enumerate}
+    \item Un noeud parfaitement pur (20/0) a une impurete nulle pour les trois mesures.
+    \item Pour une distribution equilibree (10/10 ou 5/5), l'impurete est maximale.
+    \item L'entropie est plus sensible aux variations pres des extremes que l'indice de Gini.
+    \item Les distributions symetriques (9/1 et 1/9) ont les memes valeurs d'impurete.
+\end{enumerate}
+
+\subsection{Implementation Python}
+
+L'implementation des trois fonctions de calcul d'impurete est presentee ci-dessous:
+
+\begin{lstlisting}[caption={Fonctions de calcul d'impurete en Python}]
+import numpy as np
+
+def gini(counts):
+    """Calcule l'indice de Gini."""
+    total = sum(counts)
+    if total == 0:
+        return 0
+    probs = [c / total for c in counts]
+    return 1 - sum(p**2 for p in probs)
+
+def entropy(counts):
+    """Calcule l'entropie de Shannon."""
+    total = sum(counts)
+    if total == 0:
+        return 0
+    probs = [c / total for c in counts if c > 0]
+    return -sum(p * np.log2(p) for p in probs)
+
+def classification_error(counts):
+    """Calcule l'erreur de classification."""
+    total = sum(counts)
+    if total == 0:
+        return 0
+    return 1 - max(counts) / total
+\end{lstlisting}
+
+% ============================================================
+% PARTIE 2: IMPLEMENTATION FROM SCRATCH
+% ============================================================
+
+\section{Implementation d'un Mini-Arbre de Decision}
+
+\subsection{Choix du Jeu de Donnees}
+
+Pour ce projet, nous utilisons un dataset de credit simplifie contenant les informations suivantes:
+\begin{itemize}
+    \item \textbf{proprietaire}: Indique si le client est proprietaire de son logement (oui/non)
+    \item \textbf{etat\_matrimonial}: Situation matrimoniale du client
+    \item \textbf{revenu}: Niveau de revenu du client
+    \item \textbf{defaut}: Variable cible - indique si le client est en defaut de paiement (oui/non)
+\end{itemize}
+
+Les donnees sont chargees depuis un depot GitHub:
+\begin{lstlisting}[caption={Chargement des donnees}]
+base_url = 'https://raw.githubusercontent.com/NassimZahri/Data_Mining/main/data/'
+df = pd.read_csv(base_url + 'credit_simple.csv')
+\end{lstlisting}
+
+\subsection{Structure de Donnees: Classe Node}
+
+La structure de l'arbre est implementee a l'aide d'une classe Python representant les noeuds:
+
+\begin{lstlisting}[caption={Classe Node pour la representation de l'arbre}]
+class Node:
+    def __init__(self, feature=None, threshold=None, 
+                 left=None, right=None, value=None):
+        self.feature = feature      # Attribut de split
+        self.threshold = threshold  # Seuil pour le test
+        self.left = left           # Sous-arbre gauche
+        self.right = right         # Sous-arbre droit
+        self.value = value         # Classe predite (feuilles)
+    
+    def is_leaf(self):
+        return self.value is not None
+\end{lstlisting}
+
+\subsection{Algorithme de Recherche du Meilleur Split}
+
+La fonction \texttt{best\_split} recherche l'attribut et le seuil qui maximisent le gain d'information:
+
+\begin{algorithm}
+\caption{Algorithme de recherche du meilleur split}
+\begin{algorithmic}[1]
+\Function{BestSplit}{$X, y$}
+    \State $best\_gain \gets 0$
+    \State $parent\_impurity \gets Gini(y)$
+    \For{chaque attribut $a$ dans $X$}
+        \For{chaque seuil $t$ dans les valeurs de $a$}
+            \State Diviser $y$ en $y_{gauche}$ et $y_{droite}$ selon $a \leq t$
+            \State Calculer l'impurete ponderee des enfants
+            \State $gain \gets parent\_impurity - impurete\_enfants$
+            \If{$gain > best\_gain$}
+                \State Mettre a jour le meilleur split
+            \EndIf
+        \EndFor
+    \EndFor
+    \State \Return meilleur attribut, meilleur seuil
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Le gain d'information est calcule comme:
+\begin{equation}
+Gain = Impurete(parent) - \sum_{k \in \{gauche, droite\}} \frac{|N_k|}{|N|} \times Impurete(N_k)
+\end{equation}
+
+\subsection{Construction Recursive de l'Arbre}
+
+L'arbre est construit recursivement avec les conditions d'arret suivantes:
+\begin{enumerate}
+    \item Noeud pur (tous les exemples de meme classe)
+    \item Profondeur maximale atteinte (\texttt{max\_depth})
+    \item Nombre minimum d'exemples dans le noeud (\texttt{min\_samples\_leaf})
+\end{enumerate}
+
+\begin{lstlisting}[caption={Construction recursive de l'arbre}]
+def build_tree(X, y, depth=0, max_depth=3, min_samples_leaf=1):
+    n_samples = len(y)
+    n_classes = len(set(y))
+    
+    # Conditions d'arret
+    if n_classes == 1 or depth >= max_depth or \
+       n_samples < min_samples_leaf * 2:
+        return Node(value=y.mode()[0])
+    
+    # Trouver le meilleur split
+    feature, threshold, gain = best_split(X, y)
+    
+    if feature is None:
+        return Node(value=y.mode()[0])
+    
+    # Division et construction recursive
+    left_mask = X[feature] <= threshold
+    left = build_tree(X[left_mask], y[left_mask], depth+1)
+    right = build_tree(X[~left_mask], y[~left_mask], depth+1)
+    
+    return Node(feature, threshold, left, right)
+\end{lstlisting}
+
+\subsection{Fonction de Prediction}
+
+La prediction consiste a parcourir l'arbre depuis la racine:
+
+\begin{lstlisting}[caption={Fonction de prediction}]
+def predict_one(x, node):
+    if node.is_leaf():
+        return node.value
+    
+    if x[node.feature] <= node.threshold:
+        return predict_one(x, node.left)
+    else:
+        return predict_one(x, node.right)
+\end{lstlisting}
+
+\subsection{Comparaison avec Scikit-Learn}
+
+Nous avons compare notre implementation avec \texttt{sklearn.tree.DecisionTreeClassifier}. Les resultats montrent des performances similaires, validant notre algorithme.
+
+\begin{table}[h]
+\centering
+\caption{Comparaison des performances}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Metrique} & \textbf{Notre Implementation} & \textbf{Sklearn} \\
+\midrule
+Accuracy (Train) & Variable selon les donnees & Variable selon les donnees \\
+Accuracy (Test) & Comparable & Comparable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La comparaison confirme que notre implementation from scratch produit des resultats coherents avec une bibliotheque standard de reference.
+
+% ============================================================
+% PARTIE 3: EXTENSIONS
+% ============================================================
+
+\section{Extensions: Sur-apprentissage et Methodes d'Ensemble}
+
+\subsection{Analyse du Sur-apprentissage}
+
+Le sur-apprentissage (overfitting) se produit lorsque le modele memorise les donnees d'entrainement au lieu d'apprendre des patterns generalises.
+
+\subsubsection{Effet de la Profondeur}
+
+Nous avons analyse l'effet de \texttt{max\_depth} sur les performances:
+
+\begin{itemize}
+    \item \textbf{Profondeur faible}: Sous-apprentissage, le modele est trop simple
+    \item \textbf{Profondeur elevee}: Sur-apprentissage, le modele memorise les donnees
+    \item \textbf{Profondeur optimale}: Compromis entre biais et variance
+\end{itemize}
+
+L'ecart entre l'accuracy sur l'ensemble d'entrainement et l'ensemble de test est un indicateur du niveau de sur-apprentissage.
+
+\subsubsection{Effet de min\_samples\_leaf}
+
+Le parametre \texttt{min\_samples\_leaf} controle le nombre minimum d'exemples dans une feuille:
+\begin{itemize}
+    \item Valeur faible: Risque de sur-apprentissage
+    \item Valeur elevee: Regularisation, mais peut causer du sous-apprentissage
+\end{itemize}
+
+\subsection{Forets Aleatoires (Random Forest)}
+
+Les forets aleatoires combinent plusieurs arbres de decision pour reduire la variance:
+
+\begin{equation}
+\hat{y} = mode\{h_1(x), h_2(x), \ldots, h_T(x)\}
+\end{equation}
+
+ou $h_t$ represente l'arbre $t$ de la foret.
+
+\textbf{Principes:}
+\begin{enumerate}
+    \item \textbf{Bootstrap}: Chaque arbre est entraine sur un echantillon bootstrap
+    \item \textbf{Selection aleatoire}: Seul un sous-ensemble d'attributs est considere a chaque split
+    \item \textbf{Agregation}: Les predictions sont combinees par vote majoritaire
+\end{enumerate}
+
+\begin{lstlisting}[caption={Utilisation de Random Forest}]
+from sklearn.ensemble import RandomForestClassifier
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+accuracy = rf.score(X_test, y_test)
+\end{lstlisting}
+
+\subsection{Boosting avec AdaBoost}
+
+AdaBoost (Adaptive Boosting) est une methode qui combine des classifieurs faibles sequentiellement:
+
+\begin{enumerate}
+    \item Initialiser les poids des exemples uniformement
+    \item Pour chaque iteration $t$:
+        \begin{itemize}
+            \item Entrainer un classifieur faible $h_t$ avec les poids actuels
+            \item Calculer l'erreur ponderee $\epsilon_t$
+            \item Calculer le coefficient $\alpha_t = \frac{1}{2}\ln\frac{1-\epsilon_t}{\epsilon_t}$
+            \item Mettre a jour les poids (augmenter pour les exemples mal classes)
+        \end{itemize}
+    \item Prediction finale: $H(x) = sign\left(\sum_{t=1}^{T} \alpha_t h_t(x)\right)$
+\end{enumerate}
+
+\subsection{Resultats Comparatifs}
+
+\begin{table}[h]
+\centering
+\caption{Comparaison des methodes}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Modele} & \textbf{Accuracy Test} & \textbf{F1-Score} & \textbf{CV Mean} \\
+\midrule
+Decision Tree (depth=3) & Variable & Variable & Variable \\
+Decision Tree (no limit) & Variable & Variable & Variable \\
+Random Forest (100) & Variable & Variable & Variable \\
+AdaBoost (50) & Variable & Variable & Variable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Observations:}
+\begin{itemize}
+    \item Les methodes d'ensemble (Random Forest, AdaBoost) offrent generalement de meilleures performances
+    \item Random Forest est plus stable et resistant au sur-apprentissage
+    \item AdaBoost peut sur-apprendre avec trop d'iterations
+\end{itemize}
+
+% ============================================================
+% PARTIE 4: APPLICATION METIER
+% ============================================================
+
+\section{Application Metier: Prediction du Defaut de Credit}
+
+\subsection{Description du Domaine}
+
+\subsubsection{Problematique Metier}
+
+Dans le secteur bancaire, l'evaluation du risque de credit est fondamentale pour:
+\begin{itemize}
+    \item Minimiser les pertes financieres dues aux defauts de paiement
+    \item Optimiser l'allocation des credits
+    \item Respecter les contraintes reglementaires (Bale III, etc.)
+    \item Offrir des conditions adaptees au profil de risque du client
+\end{itemize}
+
+\subsubsection{Variables du Modele}
+
+\textbf{Variables explicatives:}
+\begin{itemize}
+    \item Statut de proprietaire
+    \item Etat matrimonial
+    \item Niveau de revenu
+\end{itemize}
+
+\textbf{Variable cible:}
+\begin{itemize}
+    \item Defaut de paiement (oui/non)
+\end{itemize}
+
+\subsection{Modele Final}
+
+Le modele final retenu est un arbre de decision avec une profondeur optimisee par validation croisee. Ce choix privilegie l'interpretabilite necessaire dans le contexte bancaire.
+
+\subsection{Extraction des Regles de Decision}
+
+Les regles extraites de l'arbre peuvent etre presentees sous forme comprehensible:
+
+\begin{quote}
+\textbf{Regle 1:} SI revenu $\leq$ seuil1 ET proprietaire = non \\
+ALORS Prediction = DEFAUT (risque eleve)
+
+\textbf{Regle 2:} SI revenu $>$ seuil1 \\
+ALORS Prediction = PAS DE DEFAUT (risque faible)
+\end{quote}
+
+Ces regles peuvent etre directement utilisees par les analystes credit pour expliquer les decisions.
+
+\subsection{Interpretation et Importance des Variables}
+
+L'analyse de l'importance des variables revele les facteurs les plus determinants dans la prediction du defaut. Cette information permet de:
+\begin{itemize}
+    \item Identifier les profils a risque
+    \item Orienter la collecte de donnees supplementaires
+    \item Proposer des produits adaptes au profil du client
+\end{itemize}
+
+\subsection{Discussion}
+
+\subsubsection{Interpretabilite}
+
+L'arbre de decision offre une transparence totale sur le processus de decision, cruciale dans le contexte reglementaire bancaire. Chaque decision peut etre justifiee par une sequence de regles claires.
+
+\subsubsection{Limites Observees}
+
+\begin{enumerate}
+    \item \textbf{Taille du dataset}: Un dataset plus grand permettrait une meilleure generalisation
+    \item \textbf{Variables limitees}: L'ajout de variables (historique, comportement) ameliorerait les predictions
+    \item \textbf{Desequilibre des classes}: Des techniques de reequilibrage pourraient etre necessaires
+    \item \textbf{Evolution temporelle}: Le modele doit etre recalibre regulierement
+\end{enumerate}
+
+\subsubsection{Recommandations}
+
+\begin{enumerate}
+    \item Utiliser l'arbre de decision pour les explications client
+    \item Combiner avec Random Forest pour les decisions automatisees
+    \item Mettre en place un monitoring des performances en production
+    \item Recalibrer le modele trimestriellement
+\end{enumerate}
+
+% ============================================================
+% CONCLUSION
+% ============================================================
+
+\section{Conclusion}
+
+Ce projet a permis d'explorer en profondeur les arbres de decision, de leur fondement theorique a leur application pratique.
+
+\textbf{Points cles:}
+\begin{itemize}
+    \item Les mesures d'impurete (Gini, Entropie) guident la construction de l'arbre
+    \item L'implementation from scratch permet de comprendre les mecanismes internes
+    \item Le sur-apprentissage peut etre controle par les hyperparametres
+    \item Les methodes d'ensemble ameliorent les performances mais reduisent l'interpretabilite
+    \item L'application metier demontre l'utilite pratique des arbres de decision
+\end{itemize}
+
+\textbf{Competences acquises:}
+\begin{itemize}
+    \item Formalisation d'un probleme de classification
+    \item Implementation algorithmique en Python
+    \item Analyse et comparaison de modeles
+    \item Interpretation metier des resultats
+\end{itemize}
+
+% ============================================================
+% BIBLIOGRAPHIE
+% ============================================================
+
+\section*{References}
+
+\begin{enumerate}
+    \item Breiman, L., Friedman, J., Olshen, R., Stone, C. (1984). \textit{Classification and Regression Trees}. Wadsworth.
+    \item Quinlan, J. R. (1986). Induction of Decision Trees. \textit{Machine Learning}, 1(1), 81-106.
+    \item Breiman, L. (2001). Random Forests. \textit{Machine Learning}, 45(1), 5-32.
+    \item Freund, Y., Schapire, R. E. (1997). A Decision-Theoretic Generalization of On-Line Learning. \textit{Journal of Computer and System Sciences}, 55(1), 119-139.
+    \item Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
+\end{enumerate}
+
+% ============================================================
+% ANNEXES
+% ============================================================
+
+\appendix
+
+\section{Code Source Complet}
+
+Les notebooks Jupyter contenant l'implementation complete sont disponibles dans le repertoire \texttt{credit\_decision\_tree\_project/}:
+
+\begin{enumerate}
+    \item \texttt{01\_impuretes.ipynb}: Calcul des mesures d'impurete
+    \item \texttt{02\_arbre\_from\_scratch.ipynb}: Implementation de l'arbre from scratch
+    \item \texttt{03\_sklearn\_comparaison.ipynb}: Comparaison avec sklearn
+    \item \texttt{04\_random\_forest\_overfitting.ipynb}: Analyse du sur-apprentissage
+    \item \texttt{05\_application\_metier.ipynb}: Application au credit bancaire
+\end{enumerate}
+
+\section{Source des Donnees}
+
+Les donnees utilisees dans ce projet sont disponibles a l'adresse suivante:
+\begin{center}
+\url{https://raw.githubusercontent.com/NassimZahri/Data_Mining/main/data/credit_simple.csv}
+\end{center}
+
+\end{document}
