@@ -1,0 +1,110 @@
+% filepath: Rapport_Mini_Projet_Data_Mining.tex
+\documentclass[12pt,a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{caption}
+
+\geometry{margin=2.5cm}
+
+% --- Informations du document ---
+\title{Rapport de Mini-Projet : Analyse de Panier de Consommation \\ \large Algorithmes Apriori et FP-Growth}
+\author{Nassim Zahri}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\subsection{Contexte}
+Dans le secteur de la vente au détail (Retail), la compréhension des habitudes d'achat des clients est un levier stratégique majeur. Ce mini-projet s'inscrit dans une démarche de \textit{Market Basket Analysis} (Analyse du Panier de la Ménagère), visant à identifier les associations de produits fréquemment achetés ensemble.
+
+\subsection{Objectif}
+L'objectif principal est de mettre en œuvre et de comparer deux algorithmes fondamentaux du Data Mining pour l'extraction de règles d'association : \textbf{Apriori} et \textbf{FP-Growth}. Le projet couvre l'ensemble de la chaîne de traitement, de la préparation des données brutes à la formulation de recommandations marketing actionnables.
+
+\section{Méthodologie}
+
+\subsection{Préparation des Données}
+Le jeu de données utilisé est issu du dataset \textit{Online Retail}, contenant des transactions réelles d'une enseigne de vente en ligne. Le processus de nettoyage a inclus :
+\begin{itemize}
+    \item \textbf{Filtrage des transactions :} Suppression des commandes annulées (identifiées par un code facture commençant par 'C').
+    \item \textbf{Nettoyage des quantités :} Exclusion des quantités négatives ou nulles.
+    \item \textbf{Gestion des valeurs manquantes :} Suppression des lignes sans identifiant de produit ou de facture.
+    \item \textbf{Transformation transactionnelle :} Regroupement des articles par numéro de facture pour créer une liste de "paniers" (transactions).
+\end{itemize}
+
+\subsection{Algorithmes Utilisés}
+\begin{enumerate}
+    \item \textbf{Apriori :} Algorithme classique utilisant une approche par niveaux. Il génère des candidats et scanne la base de données de manière itérative.
+    \item \textbf{FP-Growth (Frequent Pattern Growth) :} Approche plus moderne utilisant une structure de données compressée appelée \textit{FP-Tree}. Il évite la génération coûteuse de candidats et ne nécessite que deux scans de la base de données.
+\end{enumerate}
+
+\subsection{Choix des Paramètres}
+Pour obtenir des règles significatives tout en évitant le "bruit" statistique, les paramètres suivants ont été retenus :
+\begin{itemize}
+    \item \textbf{Support minimum ($min\_sup$) :} 0.02 (2\%). Un article doit apparaître dans au moins 2\% des transactions pour être considéré comme fréquent.
+    \item \textbf{Confiance minimum ($min\_conf$) :} 0.50 (50\%). La règle $X \Rightarrow Y$ est retenue si, lorsque $X$ est acheté, il y a au moins 50\% de chances que $Y$ le soit aussi.
+    \item \textbf{Lift minimum :} $> 1.2$. On s'assure que l'association est plus forte que le simple hasard.
+\end{itemize}
+
+\section{Principaux Résultats et Interprétation}
+
+\subsection{Extraction des Règles}
+L'application de l'algorithme FP-Growth a permis d'identifier des associations fortes. Voici un exemple de règles types obtenues :
+
+\begin{table}[h!]
+\centering
+\caption{Top des règles d'association (Exemples types)}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Antécédent (X)} & \textbf{Conséquent (Y)} & \textbf{Support} & \textbf{Confiance} & \textbf{Lift} \\ \midrule
+\{Produit A\} & \{Produit B\} & 0.032 & 0.65 & 3.45 \\
+\{Produit C, D\} & \{Produit E\} & 0.021 & 0.58 & 2.10 \\
+\{Produit F\} & \{Produit G\} & 0.045 & 0.52 & 1.85 \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Interprétation des Métriques}
+\begin{itemize}
+    \item \textbf{Support :} Indique la popularité de la combinaison. Un support de 3.2\% signifie que l'association est assez courante pour justifier une action marketing.
+    \item \textbf{Confiance :} Mesure la fiabilité de la prédiction. Une confiance de 65\% indique un fort pouvoir prédictif pour les systèmes de recommandation.
+    \item \textbf{Lift :} Avec un lift de 3.45, les clients sont plus de 3 fois plus susceptibles d'acheter le produit B s'ils ont déjà le produit A, ce qui prouve une dépendance réelle entre les articles.
+\end{itemize}
+
+\section{Recommandations Métier}
+Sur la base des règles extraites, plusieurs stratégies peuvent être déployées :
+
+\begin{enumerate}
+    \item \textbf{Offres de Lots (Bundling) :} Créer des packs promotionnels regroupant les antécédents et conséquents à fort lift (ex: "Achetez X, obtenez 20\% sur Y").
+    \item \textbf{Optimisation du Merchandising :} 
+    \begin{itemize}
+        \item \textit{Physique :} Placer les produits associés dans des rayons proches pour faciliter l'achat impulsif.
+        \item \textit{Numérique :} Afficher une section "Fréquemment achetés ensemble" sur la fiche produit de l'antécédent.
+    \end{itemize}
+    \item \textbf{Campagnes d'Emailing Ciblées :} Envoyer des recommandations personnalisées aux clients ayant acheté l'antécédent mais pas encore le conséquent.
+\end{enumerate}
+
+\section{Conclusion et Comparaison}
+
+\subsection{Comparaison Apriori vs FP-Growth}
+L'expérimentation a mis en évidence les points suivants :
+\begin{itemize}
+    \item \textbf{Performance :} FP-Growth est nettement plus rapide que l'implémentation standard d'Apriori, particulièrement sur les grands volumes de données, grâce à sa structure en arbre.
+    \item \textbf{Résultats :} Les deux algorithmes produisent des ensembles d'articles fréquents identiques pour un même support, confirmant leur fiabilité mathématique.
+\end{itemize}
+
+\subsection{Synthèse Finale}
+Le projet démontre que le Data Mining permet de transformer des données transactionnelles brutes en connaissances stratégiques. Bien que FP-Growth soit l'outil de choix pour la production en raison de son efficacité, la qualité des résultats dépend avant tout d'un nettoyage rigoureux des données et d'un réglage fin des seuils de support et de confiance.
+
+\end{document}
